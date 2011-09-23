@@ -337,6 +337,24 @@ class SearchQuerySet(object):
         clone.query.add_date_facet(field, start_date, end_date, gap_by, gap_amount=gap_amount)
         return clone
 
+    def facet_mincount(self,mincount):
+        """Sets mincount for facet result"""
+        clone = self._clone()
+        clone.query.set_facet_mincount(mincount)
+        return clone
+
+    def facet_limit(self,limit):
+        """Sets limit for facet result"""
+        clone = self._clone()
+        clone.query.set_facet_limit(limit)
+        return clone
+
+    def facet_prefix(self,prefix):
+        """Sets prefix for facet result"""
+        clone = self._clone()
+        clone.query.set_facet_prefix(prefix)
+        return clone
+
     def query_facet(self, field, query):
         """Adds faceting to a query for the provided field with a custom query."""
         clone = self._clone()
