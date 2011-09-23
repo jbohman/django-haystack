@@ -290,6 +290,7 @@ class BaseSearchQuery(object):
         self.facet_mincount = None
         self.facet_limit = None
         self.facet_prefix = None
+        self.query_facet_expression = None
         self.query_facets = []
         self.narrow_queries = set()
         self._raw_query = None
@@ -365,6 +366,9 @@ class BaseSearchQuery(object):
 
         if self.facet_prefix:
             kwargs['facet_prefix'] = self.facet_prefix
+
+        if self.query_facet_expression:
+            kwargs['query_facet_expression'] = self.query_facet_expression
 
         if self.query_facets:
             kwargs['query_facets'] = self.query_facets
@@ -692,6 +696,10 @@ class BaseSearchQuery(object):
     def set_facet_prefix(self,prefix):
         self.facet_prefix = prefix
 
+    def add_query_facet_expression(self, expression):
+        """Adds a query facet expression."""
+        self.query_facet_expression = expression
+
     def add_query_facet(self, field, query):
         """Adds a query facet on a field."""
         self.query_facets.append((self.backend.site.get_facet_field_name(field), query))
@@ -760,6 +768,7 @@ class BaseSearchQuery(object):
         clone.facet_mincount = self.facet_mincount
         clone.facet_limit = self.facet_limit
         clone.facet_prefix = self.facet_prefix
+        clone.query_facet_expression = self.query_facet_expression
         clone.query_facets = self.query_facets[:]
         clone.narrow_queries = self.narrow_queries.copy()
         clone.start_offset = self.start_offset

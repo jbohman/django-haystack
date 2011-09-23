@@ -355,6 +355,12 @@ class SearchQuerySet(object):
         clone.query.set_facet_prefix(prefix)
         return clone
 
+    def query_facet_expression(self, expression):
+        """Adds faceting to a query for the provided expression."""
+        clone = self._clone()
+        clone.query.add_query_facet_expression(expression)
+        return clone
+
     def query_facet(self, field, query):
         """Adds faceting to a query for the provided field with a custom query."""
         clone = self._clone()
