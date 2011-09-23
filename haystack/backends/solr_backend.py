@@ -106,7 +106,7 @@ class SolrSearchBackend(BaseSearchBackend):
 
     @log_query
     def search(self, query_string, sort_by=None, start_offset=0, end_offset=None,
-               fields='', highlight=False, facets=None, date_facets=None, query_facets=None,
+               fields='', highlight=False, facets=None, date_facets=None, query_facets=None, query_facet_expression=None,
                narrow_queries=None, spelling_query=None, facet_mincount=None, facet_limit=None, facet_prefix=None,
                limit_to_registered_models=None, result_class=None, **kwargs):
         if len(query_string) == 0:
@@ -174,6 +174,10 @@ class SolrSearchBackend(BaseSearchBackend):
         if facet_prefix is not None:
             kwargs['facet'] = 'on'
             kwargs['facet.prefix'] = facet_prefix
+
+        if query_facet_expression is not None:
+            kwargs['facet'] = 'on'
+            kwargs['facet.query'] = query_facet_expression
 
         if query_facets is not None:
             kwargs['facet'] = 'on'
@@ -510,6 +514,9 @@ class SolrSearchQuery(BaseSearchQuery):
 
         if self.facet_prefix:
             kwargs['facet_prefix'] = self.facet_prefix
+
+        if self.query_facet_expression:
+            kwargs['query_facet_expression'] = self.query_facet_expression
 
         if self.query_facets:
             kwargs['query_facets'] = self.query_facets
