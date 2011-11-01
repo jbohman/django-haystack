@@ -325,6 +325,11 @@ class SearchQuerySet(object):
         clone.query.add_boost(term, boost)
         return clone
 
+    def override(self, field, value):
+        clone = self._clone()
+        clone.query_add_override(field, value)
+        return clone
+
     def dismax(self, field, boost):
         clone = self._clone()
         clone.query.add_dismax(field, boost)

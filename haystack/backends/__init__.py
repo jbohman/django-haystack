@@ -286,6 +286,7 @@ class BaseSearchQuery(object):
         self.end_offset = None
         self.highlight = False
         self.dismax = {}
+        self.override = {}
         self.facets = set()
         self.date_facets = {}
         self.facet_mincount = None
@@ -645,6 +646,9 @@ class BaseSearchQuery(object):
         """Clears any existing limits."""
         self.start_offset, self.end_offset = 0, None
 
+    def add_override(self, field, value):
+        self.override[field] = value
+
     def add_dismax(self, field, boost_value):
         """Boost certain field in the query."""
         self.dismax[field] = boost_value
@@ -769,6 +773,7 @@ class BaseSearchQuery(object):
         clone.query_filter = deepcopy(self.query_filter)
         clone.order_by = self.order_by[:]
         clone.models = self.models.copy()
+        clone.override = self.override.copy()
         clone.dismax = self.dismax.copy()
         clone.boost = self.boost.copy()
         clone.highlight = self.highlight
