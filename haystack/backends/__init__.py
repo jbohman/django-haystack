@@ -376,6 +376,9 @@ class BaseSearchQuery(object):
         
         if self.narrow_queries:
             kwargs['narrow_queries'] = self.narrow_queries
+
+        if self.dismax:
+            kwargs['dismax'] = self.dismax
         
         if spelling_query:
             kwargs['spelling_query'] = spelling_query
