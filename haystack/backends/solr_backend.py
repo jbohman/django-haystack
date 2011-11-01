@@ -112,7 +112,7 @@ class SearchBackend(BaseSearchBackend):
     def search(self, query_string, sort_by=None, start_offset=0, end_offset=None,
                fields='', highlight=False, facets=None, date_facets=None, query_facets=None, query_facet_expression=None,
                narrow_queries=None, spelling_query=None, facet_mincount=None, facet_limit=None, facet_prefix=None,
-               limit_to_registered_models=None, result_class=None, **kwargs):
+               dismax=None, limit_to_registered_models=None, result_class=None, **kwargs):
         if len(query_string) == 0:
             return {
                 'results': [],
@@ -186,6 +186,10 @@ class SearchBackend(BaseSearchBackend):
         if query_facets is not None:
             kwargs['facet'] = 'on'
             kwargs['facet.query'] = ["%s:%s" % (field, value) for field, value in query_facets]
+
+        if dismax:
+            kwargs['defType'] = 'edismax'
+            kwargs['qf'] = ' '.join(("%s^%f" % (key, float(val)) for key, val in dismax.iteritems()))
         
         if limit_to_registered_models is None:
             limit_to_registered_models = getattr(settings, 'HAYSTACK_LIMIT_TO_REGISTERED_MODELS', True)
@@ -509,6 +513,9 @@ class SearchQuery(BaseSearchQuery):
         
         if spelling_query:
             kwargs['spelling_query'] = spelling_query
+
+        if self.dismax:
+            kwargs['dismax'] = self.dismax
         
         results = self.backend.search(final_query, **kwargs)
         self._results = results.get('results', [])

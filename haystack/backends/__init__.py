@@ -285,6 +285,7 @@ class BaseSearchQuery(object):
         self.start_offset = 0
         self.end_offset = None
         self.highlight = False
+        self.dismax = {}
         self.facets = set()
         self.date_facets = {}
         self.facet_mincount = None
@@ -640,7 +641,11 @@ class BaseSearchQuery(object):
     def clear_limits(self):
         """Clears any existing limits."""
         self.start_offset, self.end_offset = 0, None
-    
+
+    def add_dismax(self, field, boost_value):
+        """Boost certain field in the query."""
+        self.dismax[field] = boost_value
+
     def add_boost(self, term, boost_value):
         """Adds a boosted term and the amount to boost it to the query."""
         self.boost[term] = boost_value
@@ -761,6 +766,7 @@ class BaseSearchQuery(object):
         clone.query_filter = deepcopy(self.query_filter)
         clone.order_by = self.order_by[:]
         clone.models = self.models.copy()
+        clone.dismax = self.dismax.copy()
         clone.boost = self.boost.copy()
         clone.highlight = self.highlight
         clone.facets = self.facets.copy()
